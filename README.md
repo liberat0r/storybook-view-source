@@ -1,5 +1,7 @@
 # storybook-view-source
-View source of selected files in storybook panel
+View source of selected files in storybook panel.
+
+Developed and tested in Storybook 6.3.5.
 
 ## Installation
 Add `./src/register.js` in your `.storybook/main.js`. 
