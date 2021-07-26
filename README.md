@@ -1,6 +1,8 @@
 # storybook-view-source
 View source of selected files in storybook panel.
 
+![screenshot](screenshot.png?raw=true "screenshot")
+
 Developed and tested in Storybook 6.3.5.
 
 ## Installation
