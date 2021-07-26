@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { AddonPanel } from '@storybook/components';
-import { useParameter } from '@storybook/api';
+import { useParameter, useStorybookState } from '@storybook/api';
 import CodeViewer from './elements/CodeViewer.js';
 import SelectSource from './elements/SelectSource.js';
 import langs from '../config/langs.js';
 
 function Panel({ active }) {
 
+    const { path } = useStorybookState();
     const [selectedSourceIndex, setSelectedSourceIndex] = useState(0);
     const sources = useParameter('sources', []);
 
@@ -14,7 +15,7 @@ function Panel({ active }) {
         return () => {
             setSelectedSourceIndex(0);
         };
-    }, []);
+    }, [path]);
 
     const sourceValues = useMemo(() => {
         if (!sources || sources.length === 0) return [];

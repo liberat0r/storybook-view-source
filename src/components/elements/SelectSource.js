@@ -6,7 +6,9 @@ const StyledSelectWrap = styled.div(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    padding: 15
+    padding: 15,
+    borderBottom: `1px solid ${theme.appBorderColor}`,
+    height: 71
 }));
 
 const StyledSelect = styled.select(({ theme }) => ({
