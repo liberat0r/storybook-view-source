@@ -3,8 +3,9 @@ import { AddonPanel } from '@storybook/components';
 import { useParameter, useStorybookState } from '@storybook/api';
 import CodeViewer from './elements/CodeViewer.js';
 import SelectSource from './elements/SelectSource.js';
-import langs from '../config/langs.js';
+import NoSourcesWarning from './elements/NoSourcesWarning.js';
 import { validateSource } from '../lib/functions.js';
+import langs from '../config/langs.js';
 
 function Panel({ active }) {
 
@@ -35,8 +36,6 @@ function Panel({ active }) {
         return values;
     }, [sources]);
 
-    if (!sources || sources.length === 0) return '';
-
     const handleSourceChange = e => {
         setSelectedSourceIndex(parseInt(e.target.value));
     };
@@ -45,15 +44,17 @@ function Panel({ active }) {
 
     return <AddonPanel
         active={active}>
-        <SelectSource
-            value={selectedSourceIndex}
-            values={sourceValues}
-            onChange={handleSourceChange}
-            source={activeSource}/>
-        {sources[selectedSourceIndex] && langs[sources[selectedSourceIndex].language] ?
-            <CodeViewer
-                source={activeSource}
-                language={langs[sources[selectedSourceIndex].language]}/> : ''}
+        {!sources || !Array.isArray(sources) || sources.length === 0 ? <NoSourcesWarning/> : <>
+            <SelectSource
+                value={selectedSourceIndex}
+                values={sourceValues}
+                onChange={handleSourceChange}
+                source={activeSource}/>
+            {sources[selectedSourceIndex] && langs[sources[selectedSourceIndex].language] ?
+                <CodeViewer
+                    source={activeSource}
+                    language={langs[sources[selectedSourceIndex].language]}/> : ''}
+        </>}
     </AddonPanel>;
 }
 
