@@ -3,6 +3,8 @@ import { AddonPanel } from '@storybook/components';
 import { useParameter, useStorybookState } from '@storybook/api';
 import CodeViewer from './elements/CodeViewer.js';
 import SelectSource from './elements/SelectSource.js';
+import NoSourcesWarning from './elements/NoSourcesWarning.js';
+import { validateSource } from '../lib/functions.js';
 import langs from '../config/langs.js';
 
 function Panel({ active }) {
@@ -18,21 +20,23 @@ function Panel({ active }) {
     }, [path]);
 
     const sourceValues = useMemo(() => {
-        if (!sources || sources.length === 0) return [];
+        if (!sources || !Array.isArray(sources) || sources.length === 0) return [];
         const values = [];
         for (let i = 0; i < sources.length; i++) {
-            values.push({
-                value: i,
-                label: sources[i].name
-            });
+            const errMessage = validateSource(sources[i]);
+            if (errMessage) {
+                console.error(errMessage);
+            } else {
+                values.push({
+                    value: i,
+                    label: sources[i].name
+                });
+            }
         }
         return values;
     }, [sources]);
 
-    if (!sources || sources.length === 0) return '';
-
     const handleSourceChange = e => {
-        console.log('setSelectedSourceIndex', parseInt(e.target.value));
         setSelectedSourceIndex(parseInt(e.target.value));
     };
 
@@ -40,15 +44,17 @@ function Panel({ active }) {
 
     return <AddonPanel
         active={active}>
-        <SelectSource
-            value={selectedSourceIndex}
-            values={sourceValues}
-            onChange={handleSourceChange}
-            source={activeSource}/>
-        {sources[selectedSourceIndex] && langs[sources[selectedSourceIndex].language] ?
-            <CodeViewer
-                source={activeSource}
-                language={langs[sources[selectedSourceIndex].language]}/> : ''}
+        {!sources || !Array.isArray(sources) || sources.length === 0 ? <NoSourcesWarning/> : <>
+            <SelectSource
+                value={selectedSourceIndex}
+                values={sourceValues}
+                onChange={handleSourceChange}
+                source={activeSource}/>
+            {sources[selectedSourceIndex] && langs[sources[selectedSourceIndex].language] ?
+                <CodeViewer
+                    source={activeSource}
+                    language={langs[sources[selectedSourceIndex].language]}/> : ''}
+        </>}
     </AddonPanel>;
 }
 
